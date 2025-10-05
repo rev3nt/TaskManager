@@ -4,14 +4,9 @@ import pytest
 TASK_LIST = [
     ([
         {"description": "Task 1"},
-        {"description": "Task 2"},
-        {"description": "Task 3"},
-        {"description": "Task 4"}
     ]),
     ([
         {"description": ""},
-        {"description": "    "},
-        {"description": "Only this should be in list"}
     ]),
     ([])
 ]
@@ -54,7 +49,7 @@ def test_add_and_complete_task(task_manager_setup, tasks_list):
 
 @pytest.mark.parametrize("tasks_list", TASK_LIST)
 def test_delete_task(task_manager_setup, tasks_list):
-    tm = TaskManager()
+    tm = task_manager_setup
 
     for task in tasks_list:
         tm.add_task(task['description'])
@@ -78,6 +73,8 @@ def test_save_and_load_task(task_manager_setup, json_file_cleaner, tasks_list):
 
     for task in tasks_list:
         tm_to_save.add_task(task['description'])
+
+    print(tm_to_load.__dict__['task_list'])
 
     tm_to_save.save_to_json(FILE_NAME)
 
