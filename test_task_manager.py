@@ -1,6 +1,7 @@
 from task_manager import TaskManager
 import pytest
 
+
 TASK_LIST = [
     ([
         {"description": "Task 1"},
