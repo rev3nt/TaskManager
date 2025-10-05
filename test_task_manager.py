@@ -2,21 +2,22 @@ from task_manager import TaskManager
 import pytest
 
 TASK_LIST = [
-        ([
+    ([
         {"description": "Task 1"},
         {"description": "Task 2"},
         {"description": "Task 3"},
         {"description": "Task 4"}
-        ]),
-        ([
-            {"description": ""},
-            {"description": "    "},
-            {"description": "Only this should be in list"}
-        ]),
-        ([])
-    ]
+    ]),
+    ([
+        {"description": ""},
+        {"description": "    "},
+        {"description": "Only this should be in list"}
+    ]),
+    ([])
+]
 
 FILE_NAME = 'saved_tasks.json'
+
 
 @pytest.fixture
 def json_file_cleaner():
@@ -26,12 +27,17 @@ def json_file_cleaner():
         pass
 
 
+@pytest.fixture
+def task_manager_setup():
+    return TaskManager()
+
+
 @pytest.mark.parametrize("tasks_list", TASK_LIST)
-def test_add_and_complete_task(tasks_list):
-    tm = TaskManager()
+def test_add_and_complete_task(task_manager_setup, tasks_list):
+    tm = task_manager_setup
 
     for task in tasks_list:
-       tm.add_task(task['description'])
+        tm.add_task(task['description'])
 
     initial_task_count = len(tm.__dict__['task_list'])
 
@@ -40,18 +46,18 @@ def test_add_and_complete_task(tasks_list):
     if initial_task_count > 0:
         tm.complete_task(0)
 
-        assert tm.__dict__['task_list'][0]['completed'] == True
+        assert tm.__dict__['task_list'][0]['completed']
     else:
         tm.complete_task(0)
         assert (len(tm.__dict__['task_list'])) == initial_task_count
 
 
 @pytest.mark.parametrize("tasks_list", TASK_LIST)
-def test_delete_task(tasks_list):
+def test_delete_task(task_manager_setup, tasks_list):
     tm = TaskManager()
 
     for task in tasks_list:
-       tm.add_task(task['description'])
+        tm.add_task(task['description'])
 
     initial_task_count = len(tm.__dict__['task_list'])
 
@@ -65,8 +71,8 @@ def test_delete_task(tasks_list):
 
 
 @pytest.mark.parametrize("tasks_list", TASK_LIST)
-def test_save_and_load_task(json_file_cleaner, tasks_list):
-    tm_to_save = TaskManager()
+def test_save_and_load_task(task_manager_setup, json_file_cleaner, tasks_list):
+    tm_to_save = task_manager_setup
 
     tm_to_load = TaskManager()
 
